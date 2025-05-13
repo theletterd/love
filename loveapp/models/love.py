@@ -5,6 +5,8 @@ from google.appengine.ext import ndb
 
 from loveapp.models import Employee
 
+import loveapp.config as config
+
 
 class Love(ndb.Model):
     """Models an instance of sent love."""
@@ -31,7 +33,24 @@ class Love(ndb.Model):
         super(Love, self).__init__(*args, **kwargs)
         self._tags = []
 
-    def add_tag(self, tag):
+        # Initialize tags based on message content
+        self._init_tags()
+
+    def _init_tags(self):
+        """Initialize tags based on message content."""
+        if self.message and self._is_work_anniversary_message(self.message):
+            self._add_tag('work_anniversary')
+
+    def _add_tag(self, tag):
         """Helper method to append a tag to the tags list."""
         if tag not in self._tags:
             self._tags.append(tag)
+
+    def _is_work_anniversary_message(self, message: str) -> bool:
+        """Helper function to check if a message contains work anniversary text."""
+        work_anniversary_finder = config.MESSAGE_TAG_CONFIG.get("work_anniversary_tag_substring")
+        if work_anniversary_finder is None:
+            self._tags = []
+            return False
+
+        return bool(message and work_anniversary_finder in message.lower())
