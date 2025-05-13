@@ -34,7 +34,7 @@ to set up billing and give Cloud Build permission to deploy your app.
 
 ### Prepare for deployment
 
-Copy the [example config](config-example.py) file to config.py and change the
+Copy the [example config](loveapp/config-example.py) file to config.py and change the
 settings. Don't forget to specify your own SECRET_KEY.
 
 ### Initial deployment
@@ -85,7 +85,7 @@ using the [Secret](models/secret.py) model. Locally, you can temporarily add an 
 def create_secrets():
     from loveapp.models import Secret
     Secret(id='AWS_ACCESS_KEY_ID', value='change-me').put()
-    Secret(id='AWS_SECRET_ACCESS_KEY', value='change-me').put()  
+    Secret(id='AWS_SECRET_ACCESS_KEY', value='change-me').put()
     return "please delete me now"
 ```
 
