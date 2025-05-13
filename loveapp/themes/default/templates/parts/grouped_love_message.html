@@ -1,0 +1,32 @@
+{% import theme("parts/photobox.html") as photobox %}
+
+{% macro love(to_from, user_list, message, ts, secret) %}
+<div class="love-message-container">
+    {% set first_user = user_list[0] %}
+    {{ photobox.user_icon(first_user) }}
+    <div class="love-byline">
+        {{ to_from }}
+        <strong><a href="/explore?user={{ first_user.username }}">{{ first_user.full_name }}</a></strong>
+        {% if user_list|length > 1 %}
+            and {{ user_list|length - 1 }} others
+        {% endif %}
+        •
+        <span class="nicetime">{{ ts * 1000 }}</span>
+        {% if secret %}
+        <span class="badge">SECRET</span>
+        {% endif %} 
+    </div>    
+    <div class="love-message">
+        {{ message|linkify_company_values }}
+        {% if user_list|length > 1 %}
+        <div class="user-list">
+            {% for user in user_list %}
+            <a href="/explore?user={{ user.username }}" class="badge">{{ user.full_name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    
+</div>
+{% endmacro %}

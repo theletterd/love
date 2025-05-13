@@ -1,6 +1,7 @@
 {% extends theme("layout.html") %}
 
 {% import theme("parts/love_message.html") as love_message %}
+{% import theme("parts/grouped_love_message.html") as grouped_love_message %}
 
 {% block title %}My Love{% endblock %}
 
@@ -8,21 +9,16 @@
 <div class="row">
   <div class="col-md-6">
     <h1>Love Received</h1>
-    {% if received_loves %}
+    {% if received_grouped_loves %}
       <div class="content-container">
-      {% for love in received_loves %}
-        {% set sender = love.sender_key.get() %}
-        {% set recipient = love.recipient_key.get() %}
-        {{ love_message.love(
-          sender.full_name,
-          sender.username,
-          'you',
-          '',
-          sender,
-          love.message,
-          love.seconds_since_epoch,
-          love.secret)
-        }}
+        {% for grouped_love in received_grouped_loves %}
+        {{ grouped_love_message.love(
+          "From",
+          grouped_love.senders,
+          grouped_love.content,
+          grouped_love.most_recent_love_timestamp,
+          grouped_love.is_secret
+        )}}
       {% endfor %}
       </div>
     {% else %}
@@ -35,22 +31,17 @@
 
   <div class="col-md-6">
     <h1>Love Sent</h1>
-    {% if sent_loves %}
+    {% if sent_grouped_loves %}
       <div class="content-container">
-      {% for love in sent_loves %}
-        {% set sender = love.sender_key.get() %}
-        {% set recipient = love.recipient_key.get() %}
-        {{ love_message.love(
-          'You',
-          '',
-          recipient.full_name,
-          recipient.username,
-          recipient,
-          love.message,
-          love.seconds_since_epoch,
-          love.secret)
-        }}
-      {% endfor %}
+        {% for grouped_love in sent_grouped_loves %}
+          {{ grouped_love_message.love(
+            "To",
+            grouped_love.recipients,
+            grouped_love.content,
+            grouped_love.most_recent_love_timestamp,
+            grouped_love.is_secret
+          )}}
+        {% endfor %}
       </div>
     {% else %}
       <div class="well">
