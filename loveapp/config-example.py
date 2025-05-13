@@ -54,8 +54,8 @@ COMPANY_VALUES = [
     CompanyValue('DUST_IN_THE_WIND', 'All we are is dust in the wind, dude.', ('woah', 'whoa', 'DustInTheWind'))
 ]
 
-MESSAGE_TAG_CONFIG = {
-    # Work anniversary message string add a 🥳 to the sender's avatar to highlight work anniversary shout outs
-    # Set to None to disable
-    "work_anniversary_tag_substring": "happy workiversary",
+# Messages that find any the test in this list will render the emoji for the sender's avatar
+MESSAGE_EMOTES = {
+    "happy workiversary": "🥳",
+    "happy birthday": "🎉",
 }
