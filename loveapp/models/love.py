@@ -18,3 +18,20 @@ class Love(ndb.Model):
     @property
     def seconds_since_epoch(self):
         return int(mktime(self.timestamp.timetuple()))
+
+    @property
+    def tags(self):
+        return self._tags
+
+    @tags.setter
+    def tags(self, value):
+        self._tags = value
+
+    def __init__(self, *args, **kwargs):
+        super(Love, self).__init__(*args, **kwargs)
+        self._tags = []
+
+    def add_tag(self, tag):
+        """Helper method to append a tag to the tags list."""
+        if tag not in self._tags:
+            self._tags.append(tag)

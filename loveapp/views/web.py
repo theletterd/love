@@ -67,15 +67,19 @@ def home():
 def me():
     current_employee = Employee.get_current_employee()
 
-    sent_love = loveapp.logic.love.recent_sent_love(current_employee.key, limit=20)
-    received_love = loveapp.logic.love.recent_received_love(current_employee.key, limit=20)
+    sent_love = handle_love(
+        loveapp.logic.love.recent_sent_love(current_employee.key, limit=20).get_result()
+    )
+    received_love = handle_love(
+        loveapp.logic.love.recent_received_love(current_employee.key, limit=20).get_result()
+    )
 
     return render_template(
         'me.html',
         current_time=datetime.utcnow(),
         current_user=current_employee,
-        sent_loves=sent_love.get_result(),
-        received_loves=received_love.get_result()
+        sent_loves=sent_love,
+        received_loves=received_love
     )
 
 
@@ -192,14 +196,14 @@ def explore():
         flash('Sorry, "{}" is not a valid user.'.format(username), 'error')
         return redirect(url_for('web_app.explore'))
 
-    sent_love = loveapp.logic.love.recent_sent_love(user_key, include_secret=False, limit=20)
-    received_love = loveapp.logic.love.recent_received_love(user_key, include_secret=False, limit=20)
+    sent_love = handle_love(loveapp.logic.love.recent_sent_love(user_key, include_secret=False, limit=20).get_result())
+    received_love = handle_love(loveapp.logic.love.recent_received_love(user_key, include_secret=False, limit=20).get_result())
 
     return render_template(
         'explore.html',
         current_time=datetime.utcnow(),
-        sent_loves=sent_love.get_result(),
-        received_loves=received_love.get_result(),
+        sent_loves=sent_love,
+        received_loves=received_love,
         user=user_key.get()
     )
 
@@ -437,3 +441,25 @@ def import_employees():
     flash('We started importing employee data in the background. Refresh the page to see it.', 'info')
     taskqueue.add(url='/tasks/employees/load/csv')
     return redirect(url_for('web_app.employees'))
+
+
+def _is_yelpiversary_message(message: str) -> bool:
+    """Helper function to check if a message contains 'happy yelpiversary'."""
+    return bool(message and 'happy yelpiversary' in message.lower())
+
+
+def handle_love(loves: list) -> list:
+    """
+    Handles formatting the love response data to the caller.
+    Currently add tags to each love record based on message content and
+    may be extended to add other message details
+    """
+    if not loves:
+        return loves
+
+    for love in loves:
+        # Add yelpiversary tag if applicable
+        if _is_yelpiversary_message(love.message):
+            love.add_tag('yelpiversary')
+
+    return loves

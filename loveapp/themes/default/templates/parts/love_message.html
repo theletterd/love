@@ -1,8 +1,11 @@
 {% import theme("parts/photobox.html") as photobox %}
 
-{% macro love(sender_name, sender_username, recipient_name, recipient_username, icon_user, message, ts, secret) %}
-<div class="love-message-container">
+{% macro love(sender_name, sender_username, recipient_name, recipient_username, icon_user, message, ts, secret, tags) %}
+<div class="love-message-container" style="position: relative;">
     {{ photobox.user_icon(icon_user) }}
+    {% if 'yelpiversary' in tags %}
+        <div style="position: absolute; top: -10px; left: 25px;">🥳</div>
+    {% endif %}
     <div class="love-message">
         {{ message|linkify_company_values }}
         {% if secret %}

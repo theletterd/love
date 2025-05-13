@@ -48,7 +48,10 @@
           recipient.username,
           recipient,
           love.message,
-          love.seconds_since_epoch)
+          love.seconds_since_epoch,
+          love.secret,
+          tags
+          )
         }}
       {% endfor %}
       </div>
@@ -72,7 +75,10 @@
             recipient.username,
             sender,
             love.message,
-            love.seconds_since_epoch)
+            love.seconds_since_epoch,
+            love.secret,
+            love.tags
+            )
           }}
         {% endfor %}
       </div>
