@@ -279,9 +279,9 @@ class TestMe(LoggedInUserBaseTest):
 
         assert response_context['current_time'] is not None
         assert response_context['current_user'] == self.logged_in_employee
-        assert response_context['sent_loves'] == []
+        assert response_context['grouped_sent_loves'] == []
         assert 'Give and ye shall receive!' in response.data.decode()
-        assert response_context['received_loves'] == []
+        assert response_context['grouped_received_loves'] == []
         assert 'You haven\'t sent any love yet.' in response.data.decode()
 
     def test_me_with_loves(self, client, recorded_templates):
@@ -299,9 +299,10 @@ class TestMe(LoggedInUserBaseTest):
         response = client.get('/me')
         _, response_context = recorded_templates[0]
 
-        assert response_context['sent_loves'] == [sent_love]
+        assert response_context['grouped_sent_loves'][0]["content"] == sent_love.message
+        assert response_context['grouped_received_loves'][0]["content"] == received_love.message
+
         assert 'Well done.' in response.data.decode()
-        assert response_context['received_loves'] == [received_love]
         assert 'Awesome work.' in response.data.decode()
 
         dude.key.delete()

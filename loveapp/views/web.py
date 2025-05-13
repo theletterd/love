@@ -35,7 +35,6 @@ from loveapp.util.company_values import values_matching_prefix
 from loveapp.util.decorators import admin_required
 from loveapp.util.decorators import csrf_protect
 from loveapp.util.decorators import user_required
-from loveapp.util.formatting import format_loves
 from loveapp.util.recipient import sanitize_recipients
 from loveapp.util.render import make_json_response
 from loveapp.util.render import render_template
@@ -67,14 +66,16 @@ def me():
     current_employee = Employee.get_current_employee()
 
     sent_love = loveapp.logic.love.recent_sent_love(current_employee.key, limit=200).get_result()
+    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)
     received_love = loveapp.logic.love.recent_received_love(current_employee.key, limit=200).get_result()
+    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)
 
     return render_template(
         'me.html',
         current_time=datetime.utcnow(),
         current_user=current_employee,
-        sent_grouped_loves=loveapp.logic.love.cluster_loves_by_time(sent_love),
-        received_grouped_loves=loveapp.logic.love.cluster_loves_by_time(received_love),
+        grouped_sent_loves=grouped_sent_love,
+        grouped_received_loves=grouped_received_love
     )
 
 
@@ -105,12 +106,13 @@ def single_company_value(company_value_id):
     current_employee = Employee.get_current_employee()
 
     loves = loveapp.logic.love.recent_loves_by_company_value(None, company_value.id, limit=100).get_result()
+    grouped_loves = loveapp.logic.love.cluster_loves_by_time(loves)
 
     return render_template(
         'values.html',
         current_time=datetime.utcnow(),
         current_user=current_employee,
-        grouped_loves=loveapp.logic.love.cluster_loves_by_time(loves),
+        grouped_loves=grouped_loves,
         values=get_company_value_link_pairs(),
         company_value_string=company_value.display_string
     )
@@ -189,13 +191,15 @@ def explore():
         return redirect(url_for('web_app.explore'))
 
     sent_love = loveapp.logic.love.recent_sent_love(user_key, include_secret=False, limit=20).get_result()
+    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)
     received_love = loveapp.logic.love.recent_received_love(user_key, include_secret=False, limit=200).get_result()
+    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)
 
     return render_template(
         'explore.html',
         current_time=datetime.utcnow(),
-        received_grouped_loves=loveapp.logic.love.cluster_loves_by_time(received_love),
-        sent_grouped_loves=loveapp.logic.love.cluster_loves_by_time(sent_love),
+        grouped_received_loves=grouped_received_love,
+        grouped_sent_loves=grouped_sent_love,
         user=user_key.get()
     )
 

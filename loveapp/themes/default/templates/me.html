@@ -1,6 +1,5 @@
 {% extends theme("layout.html") %}
 
-{% import theme("parts/love_message.html") as love_message %}
 {% import theme("parts/grouped_love_message.html") as grouped_love_message %}
 
 {% block title %}My Love{% endblock %}
@@ -9,9 +8,9 @@
 <div class="row">
   <div class="col-md-6">
     <h1>Love Received</h1>
-    {% if received_grouped_loves %}
+    {% if grouped_received_loves %}
       <div class="content-container">
-        {% for grouped_love in received_grouped_loves %}
+        {% for grouped_love in grouped_received_loves %}
         {{ grouped_love_message.love(
           "From",
           grouped_love.senders,
@@ -31,9 +30,9 @@
 
   <div class="col-md-6">
     <h1>Love Sent</h1>
-    {% if sent_grouped_loves %}
+    {% if grouped_sent_loves %}
       <div class="content-container">
-        {% for grouped_love in sent_grouped_loves %}
+        {% for grouped_love in grouped_sent_loves %}
           {{ grouped_love_message.love(
             "To",
             grouped_love.recipients,

@@ -76,18 +76,23 @@ def cluster_loves_by_time(loves, time_window_days=1):
     for cluster in clustered_groups:
         newest_time = max(love.seconds_since_epoch for love in cluster)
         
-        # Get all unique senders and recipients from this cluster
-        unique_sender_keys = set()
-        unique_recipient_keys = set()
+        # Use ordered data structures to preserve the order of appearance
+        unique_sender_keys = []
+        unique_recipient_keys = []
         
-        # First pass - collect unique keys
+        # First pass - collect unique keys while preserving order
         for love in cluster:
-            unique_sender_keys.add(love.sender_key)
-            unique_recipient_keys.add(love.recipient_key)
+            # Add sender key if not already in the list
+            if love.sender_key not in unique_sender_keys and love.sender_key:
+                unique_sender_keys.insert(0, love.sender_key)
+            
+            # Add recipient key if not already in the list
+            if love.recipient_key not in unique_recipient_keys and love.recipient_key:
+                unique_recipient_keys.insert(0, love.recipient_key)
         
         # Second pass - get the actual objects
-        senders = [key.get() for key in unique_sender_keys if key]
-        recipients = [key.get() for key in unique_recipient_keys if key]
+        senders = [key.get() for key in unique_sender_keys]
+        recipients = [key.get() for key in unique_recipient_keys]
                 
         results.append({
             'content': cluster[0].message,
