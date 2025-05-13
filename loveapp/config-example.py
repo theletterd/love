@@ -54,7 +54,8 @@ COMPANY_VALUES = [
     CompanyValue('DUST_IN_THE_WIND', 'All we are is dust in the wind, dude.', ('woah', 'whoa', 'DustInTheWind'))
 ]
 
-# Messages that find any the test in this list will render the emoji for the sender's avatar
+# Highlight a user's avatar when their message contains a word or phrase that matches one of the options.
+# If a match is found, the emoji you provide will be added on the user's avatar.
 MESSAGE_EMOTES = {
     "happy workiversary": "🥳",
     "happy birthday": "🎉",
