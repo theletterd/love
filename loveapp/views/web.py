@@ -42,6 +42,9 @@ from loveapp.views import common
 
 web_app = Blueprint('web_app', __name__)
 
+# Constants
+DEFAULT_PAGE_SIZE = 20
+
 
 @web_app.route('/', methods=['GET'])
 @user_required
@@ -63,20 +66,48 @@ def home():
 @web_app.route('/me', methods=['GET'])
 @user_required
 def me():
+    # Get pagination params
+    try:
+        page = int(request.args.get('page', 1))
+        requested_page_size = int(request.args.get('page_size', DEFAULT_PAGE_SIZE))
+        page_size = min(DEFAULT_PAGE_SIZE, requested_page_size)  # Cap at DEFAULT_PAGE_SIZE
+    except ValueError:
+        page = 1
+        page_size = DEFAULT_PAGE_SIZE
+        requested_page_size = DEFAULT_PAGE_SIZE
+    love_lookback_limit = 5000
+
     current_employee = Employee.get_current_employee()
 
-    sent_love = loveapp.logic.love.recent_sent_love(current_employee.key, limit=1000).get_result()
-    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)[:20]
-    received_love = loveapp.logic.love.recent_received_love(current_employee.key, limit=1000).get_result()
-    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)[:20]
+    sent_love = loveapp.logic.love.recent_sent_love(current_employee.key, limit=love_lookback_limit).get_result()
+    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)
+    received_love = loveapp.logic.love.recent_received_love(current_employee.key, limit=love_lookback_limit).get_result()
+    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)
 
-    return render_template(
-        'me.html',
-        current_time=datetime.utcnow(),
-        current_user=current_employee,
-        grouped_sent_loves=grouped_sent_love,
-        grouped_received_loves=grouped_received_love
-    )
+    total_items = max(len(grouped_sent_love), len(grouped_received_love))
+    total_pages = (total_items + page_size - 1) // page_size  # Calculate total pages
+
+    # Calculate paged results
+    page = max(1, min(page, total_pages)) if total_pages > 0 else 1
+    start = (page - 1) * page_size
+    end = start + page_size
+    grouped_sent_love_page = grouped_sent_love[start:end]
+    grouped_received_love_page = grouped_received_love[start:end]
+
+    template_args = {
+        'current_time': datetime.utcnow(),
+        'current_user': current_employee,
+        'grouped_sent_loves': grouped_sent_love_page,
+        'grouped_received_loves': grouped_received_love_page,
+        'page': page,
+        'total_pages': total_pages,
+    }
+    
+    # Only include page_size in template if it's different from the default
+    if requested_page_size != DEFAULT_PAGE_SIZE:
+        template_args['page_size'] = page_size
+
+    return render_template('me.html', **template_args)
 
 
 @web_app.route('/<regex("[a-zA-Z]{3,30}"):user>', methods=['GET'])
@@ -124,8 +155,10 @@ def company_values():
     if not config.COMPANY_VALUES:
         abort(404)
 
-    loves = loveapp.logic.love.recent_loves_with_any_company_value(None, limit=1000).get_result()
-    grouped_loves = loveapp.logic.love.cluster_loves_by_time(loves)[:100]
+    page_size = 100
+    love_lookback_limit = 1000
+    loves = loveapp.logic.love.recent_loves_with_any_company_value(None, limit=love_lookback_limit).get_result()
+    grouped_loves = loveapp.logic.love.cluster_loves_by_time(loves)[:page_size]
 
     current_employee = Employee.get_current_employee()
 
@@ -190,10 +223,12 @@ def explore():
         flash('Sorry, "{}" is not a valid user.'.format(username), 'error')
         return redirect(url_for('web_app.explore'))
 
-    sent_love = loveapp.logic.love.recent_sent_love(user_key, limit=1000, include_secret=False).get_result()
-    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)[:20]
-    received_love = loveapp.logic.love.recent_received_love(user_key, limit=1000, include_secret=False).get_result()
-    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)[:20]
+    page_size = 20
+    love_lookback_limit = 1000
+    sent_love = loveapp.logic.love.recent_sent_love(user_key, limit=love_lookback_limit, include_secret=False).get_result()
+    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)[:page_size]
+    received_love = loveapp.logic.love.recent_received_love(user_key, limit=love_lookback_limit, include_secret=False).get_result()
+    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)[:page_size]
 
     return render_template(
         'explore.html',
