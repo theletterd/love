@@ -1,0 +1,66 @@
+{% import theme("parts/photobox.html") as photobox %}
+
+{% macro love(to_from, user_list, message, ts, secret, emote) %}
+<div class="love-message-container" style="position: relative;">
+    {% set first_user = user_list[0] %}
+    {{ photobox.user_icon(first_user) }}
+    {% if emote %}
+        <div style="position: absolute; top: -10px; left: 25px;">{{ emote }}</div>
+    {% endif %}
+    <div class="love-byline">
+        {{ to_from }}
+        <strong><a href="/explore?user={{ first_user.username }}">{{ first_user.full_name }}</a></strong>
+        {% if user_list|length > 1 %}
+            and {{ user_list|length - 1 }} others
+        {% endif %}
+        •
+        <span class="nicetime">{{ ts * 1000 }}</span>
+        {% if secret %}
+        <span class="badge">SECRET</span>
+        {% endif %} 
+    </div>    
+    <div class="love-message">
+        {{ message|linkify_company_values }}
+        <div class="love-plus-one-container" style="display: inline;">
+            <button type="button" class="btn btn-link love-plus-one" title="Send this message" onclick="togglePlusOneButton(this)">
+                <span class="circle">+1</span>
+            </button>
+            <form action="/love" method="post" style="display: none;" class="love-plus-one-confirm">
+                <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+                <input type="hidden" name="recipients" value="{{ recipient_username }}">
+                <input type="hidden" name="message" value="{{ message }}">
+                <button type="submit" class="btn btn-primary btn-xs" style="padding: 2px 7px; height: 23px;" title="Confirm +1">
+                    Send
+                </button>
+                <button type="button" class="btn btn-light btn-xs" style="padding: 2px 7px; height: 23px;" title="Cancel" onclick="togglePlusOneButton(this)">
+                    Cancel
+                </button>
+            </form>
+            <script>
+                function togglePlusOneButton(element) {
+                    const container = element.closest('.love-plus-one-container');
+                    const plusOneBtn = container.querySelector('.love-plus-one');
+                    const confirmForm = container.querySelector('.love-plus-one-confirm');
+
+                    if (confirmForm.style.display === 'none') {
+                        plusOneBtn.style.display = 'none';
+                        confirmForm.style.display = 'inline-block';
+                    } else {
+                        plusOneBtn.style.display = 'inline-block';
+                        confirmForm.style.display = 'none';
+                    }
+                }
+            </script>
+        </div>
+        {% if user_list|length > 1 %}
+        <div class="user-list">
+            {% for user in user_list %}
+            <a href="/explore?user={{ user.username }}" class="badge">{{ user.full_name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    
+</div>
+{% endmacro %}
