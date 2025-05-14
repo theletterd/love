@@ -51,6 +51,34 @@
     {% endif %}
   </div>
 </div>
+
+<div class="row">
+  <div class="pagination" style="margin-top:2em;text-align:center;">
+    {# Left Arrow #}
+    {% if page > 1 %}
+      <a href="?page={{ page-1 }}">&lsaquo;</a>
+    {% else %}
+      <span class="disabled">&lsaquo;</span>
+    {% endif %}
+
+    {# All page numbers #}
+    {% for p in range(1, total_pages + 1) %}
+      {% if p == page %}
+        <span class="active">{{ p }}</span>
+      {% else %}
+        <a href="?page={{ p }}">{{ p }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {# Right Arrow #}
+    {% if page < total_pages %}
+      <a href="?page={{ page+1 }}">&rsaquo;</a>
+    {% else %}
+      <span class="disabled">&rsaquo;</span>
+    {% endif %}
+  </div>
+
+</div>
 {% endblock %}
 
 {% block javascript %}

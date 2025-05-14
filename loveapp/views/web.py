@@ -63,19 +63,36 @@ def home():
 @web_app.route('/me', methods=['GET'])
 @user_required
 def me():
+    # Get pagination params
+    page = int(request.args.get('page', 1))
+    page_size = 2
+
     current_employee = Employee.get_current_employee()
 
-    sent_love = loveapp.logic.love.recent_sent_love(current_employee.key, limit=1000).get_result()
-    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)[:20]
-    received_love = loveapp.logic.love.recent_received_love(current_employee.key, limit=1000).get_result()
-    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)[:20]
+    sent_love = loveapp.logic.love.recent_sent_love(current_employee.key, limit=5000).get_result()
+    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)
+    received_love = loveapp.logic.love.recent_received_love(current_employee.key, limit=5000).get_result()
+    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)
+
+    total_items = max(len(grouped_sent_love), len(grouped_received_love))
+    total_pages = (total_items + page_size - 1) // page_size  # Calculate total pages
+
+    # Calculate paged results
+    page = max(1, min(page, total_pages))  # Ensure page is within bounds
+    start = (page - 1) * page_size
+    end = start + page_size
+    grouped_sent_love_page = grouped_sent_love[start:end]
+    grouped_received_love_page = grouped_received_love[start:end]
+
 
     return render_template(
         'me.html',
         current_time=datetime.utcnow(),
         current_user=current_employee,
-        grouped_sent_loves=grouped_sent_love,
-        grouped_received_loves=grouped_received_love
+        grouped_sent_loves=grouped_sent_love_page,
+        grouped_received_loves=grouped_received_love_page,
+        page=page,
+        total_pages=total_pages,
     )
 
 

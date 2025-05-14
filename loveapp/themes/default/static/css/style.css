@@ -375,3 +375,36 @@ h4 {
     margin-bottom: 1.5em;
     display: block;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    align-items: center;
+  }
+  .pagination a, .pagination span {
+    padding: 6px 12px;
+    margin: 0 2px;
+    border-radius: 3px;
+    text-decoration: none;
+    color: #555;
+    background: #fff;
+    font-size: 1em;
+  }
+  .pagination a:hover {
+    background: #f0f0f0;
+  }
+  .pagination span.active {
+    background: #e00707;
+    color: #fff;
+    border-color: #e00707;
+    font-weight: bold;
+    pointer-events: none;
+  }
+  .pagination span.disabled {
+    color: #ccc;
+    border-color: #eee;
+    background: #f9f9f9;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
