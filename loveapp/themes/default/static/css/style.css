@@ -376,6 +376,62 @@ h4 {
     display: block;
 }
 
+.love-plus-one-container {
+    float: right;
+    margin: -15px -25px 0 0;
+}
+
+.love-plus-one {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.love-plus-one .circle {
+    display: inline-block;
+    width: 20px;
+    height: 18px;
+    position: relative;
+    transform: rotate(-45deg);
+    margin: 2px 4px;
+    
+    &:before,
+    &:after {
+        content: '';
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: inherit;
+        position: absolute;
+        z-index: -1;
+    }
+    
+    &:before {
+        top: -10px;
+        left: 0;
+    }
+    
+    &:after {
+        top: 0;
+        right: -10px;
+    }
+    background: #ea050b;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
+    transform: scale(1);
+}
+
+.love-plus-one:hover .circle {
+    background: #c41200;
+    transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+    transform: scale(1.1);
+}
+
 .pagination {
     display: flex;
     justify-content: center;
