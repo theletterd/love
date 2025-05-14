@@ -65,10 +65,10 @@ def home():
 def me():
     current_employee = Employee.get_current_employee()
 
-    sent_love = loveapp.logic.love.recent_sent_love(current_employee.key, limit=200).get_result()
-    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)
-    received_love = loveapp.logic.love.recent_received_love(current_employee.key, limit=200).get_result()
-    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)
+    sent_love = loveapp.logic.love.recent_sent_love(current_employee.key, limit=1000).get_result()
+    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)[:20]
+    received_love = loveapp.logic.love.recent_received_love(current_employee.key, limit=1000).get_result()
+    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)[:20]
 
     return render_template(
         'me.html',
@@ -105,8 +105,8 @@ def single_company_value(company_value_id):
 
     current_employee = Employee.get_current_employee()
 
-    loves = loveapp.logic.love.recent_loves_by_company_value(None, company_value.id, limit=100).get_result()
-    grouped_loves = loveapp.logic.love.cluster_loves_by_time(loves)
+    loves = loveapp.logic.love.recent_loves_by_company_value(None, company_value.id, limit=1000).get_result()
+    grouped_loves = loveapp.logic.love.cluster_loves_by_time(loves)[:100]
 
     return render_template(
         'values.html',
@@ -124,8 +124,8 @@ def company_values():
     if not config.COMPANY_VALUES:
         abort(404)
 
-    loves = loveapp.logic.love.recent_loves_with_any_company_value(None, limit=100).get_result()
-    grouped_loves = loveapp.logic.love.cluster_loves_by_time(loves)
+    loves = loveapp.logic.love.recent_loves_with_any_company_value(None, limit=1000).get_result()
+    grouped_loves = loveapp.logic.love.cluster_loves_by_time(loves)[:100]
 
     current_employee = Employee.get_current_employee()
 
@@ -190,10 +190,10 @@ def explore():
         flash('Sorry, "{}" is not a valid user.'.format(username), 'error')
         return redirect(url_for('web_app.explore'))
 
-    sent_love = loveapp.logic.love.recent_sent_love(user_key, include_secret=False, limit=20).get_result()
-    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)
-    received_love = loveapp.logic.love.recent_received_love(user_key, include_secret=False, limit=200).get_result()
-    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)
+    sent_love = loveapp.logic.love.recent_sent_love(user_key, limit=1000, include_secret=False).get_result()
+    grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)[:20]
+    received_love = loveapp.logic.love.recent_received_love(user_key, limit=1000, include_secret=False).get_result()
+    grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)[:20]
 
     return render_template(
         'explore.html',

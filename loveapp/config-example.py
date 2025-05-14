@@ -60,3 +60,8 @@ MESSAGE_EMOTES = {
     "happy workiversary": "🥳",
     "happy birthday": "🎉",
 }
+
+# Temporaral separation of clustered loves.
+# i.e., if two loves have the same content but are sent more than this time apart,
+# they will be considered separate clusters.
+LOVE_CLUSTERING_TIME_WINDOW_DAYS = 7

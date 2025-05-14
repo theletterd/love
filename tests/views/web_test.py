@@ -584,6 +584,7 @@ class TestValues(LoggedInUserBaseTest):
             CompanyValue('AWESOME', 'awesome', ['awesome']),
             CompanyValue('COOL', 'cool', ['cool'])
         ]
+        mock_logic_config.LOVE_CLUSTERING_TIME_WINDOW_DAYS = mock_util_config.LOVE_CLUSTERING_TIME_WINDOW_DAYS = 1
 
         response = client.get('/value/cool')
         template, response_context = recorded_templates[0]
@@ -606,6 +607,7 @@ class TestValues(LoggedInUserBaseTest):
             CompanyValue('AWESOME', 'awesome', ['awesome']),
             CompanyValue('COOL', 'cool', ['cool'])
         ]
+        mock_logic_config.LOVE_CLUSTERING_TIME_WINDOW_DAYS = mock_util_config.LOVE_CLUSTERING_TIME_WINDOW_DAYS = 1
 
         response = client.get('/values')
         template, response_context = recorded_templates[0]

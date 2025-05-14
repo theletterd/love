@@ -28,35 +28,26 @@ def _love_query(start_dt, end_dt, include_secret):
         query = query.filter(Love.secret == False)  # noqa
     return query
 
-def cluster_loves_by_time(loves, time_window_days=1):
-    # Phase 1: strict group by content
+def cluster_loves_by_time(loves, time_window_days=None):
+    time_window_days = time_window_days or config.LOVE_CLUSTERING_TIME_WINDOW_DAYS
+    # Phase 1: group by content and secrecy
     groups = defaultdict(list)
     for love in loves:
-        groups[love.message.strip().lower()].append(love)
-    
-    # Phase 2: further group by secret status
-    secret_groups = {}
-    for content, content_loves in groups.items():
-        # Split into secret and non-secret groups
-        secret_loves = [love for love in content_loves if love.secret]
-        non_secret_loves = [love for love in content_loves if not love.secret]
-        
-        # Only add groups that have at least one love
-        if secret_loves:
-            secret_groups[(content, True)] = secret_loves
-        if non_secret_loves:
-            secret_groups[(content, False)] = non_secret_loves
-        
-    # Phase 3: within each group, temporal clustering
+        # key is a combo of message and secret status, since secret loves 
+        # shouldn't be grouped with non-secret ones
+        key = love.message.strip().lower() + f"_secret={love.secret}"
+        groups[key].append(love)
+      
+    # Phase 2: within each group, do temporal clustering
     clustered_groups = []
     threshold = timedelta(days=time_window_days)
     
-    for (content, is_secret), content_loves in secret_groups.items():
+    for loves in groups.values():
         # Sort by timestamp
-        content_loves.sort(key=lambda l: l.timestamp)
+        loves.sort(key=lambda l: l.timestamp)
         current_cluster = []
         last_time = None
-        for love in content_loves:
+        for love in loves:
             if not current_cluster:
                 current_cluster.append(love)
                 last_time = love.timestamp
