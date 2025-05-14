@@ -96,6 +96,7 @@ def cluster_loves_by_time(loves, time_window_days=1):
                 
         results.append({
             'content': cluster[0].message,
+            'emote': cluster[0].emote,
             'is_secret': cluster[0].secret,  # Add is_secret flag to result
             'senders': senders,
             'recipients': recipients,

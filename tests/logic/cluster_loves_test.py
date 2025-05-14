@@ -19,6 +19,7 @@ class MockLove:
         self.secret = secret
         self.sender_key = sender_key
         self.recipient_key = recipient_key
+        self.emote = None  # Not used in this test, but included for completeness
 
 
 @pytest.mark.usefixtures('gae_testbed')
@@ -150,7 +151,6 @@ class TestClusterLoves(unittest.TestCase):
         # 3. "Nice presentation!"
         # 4. "Great job!" (non-secret, older)
         self.assertEqual(len(clusters), 4)
-        print(clusters)
         
         # Verify they're in the right order (most recent first)
         self.assertEqual(clusters[0]['content'], "Great job!")

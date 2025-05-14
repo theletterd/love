@@ -1,9 +1,12 @@
 {% import theme("parts/photobox.html") as photobox %}
 
-{% macro love(to_from, user_list, message, ts, secret) %}
-<div class="love-message-container">
+{% macro love(to_from, user_list, message, ts, secret, emote) %}
+<div class="love-message-container" style="position: relative;">
     {% set first_user = user_list[0] %}
     {{ photobox.user_icon(first_user) }}
+    {% if emote %}
+        <div style="position: absolute; top: -10px; left: 25px;">{{ emote }}</div>
+    {% endif %}
     <div class="love-byline">
         {{ to_from }}
         <strong><a href="/explore?user={{ first_user.username }}">{{ first_user.full_name }}</a></strong>
