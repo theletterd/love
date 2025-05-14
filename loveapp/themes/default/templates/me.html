@@ -56,7 +56,7 @@
   <div class="pagination" style="margin-top:2em;text-align:center;">
     {# Left Arrow #}
     {% if page > 1 %}
-      <a href="?page={{ page-1 }}">&lsaquo;</a>
+      <a href="?page={{ page-1 }}{% if page_size is defined %}&page_size={{ page_size }}{% endif %}">&lsaquo;</a>
     {% else %}
       <span class="disabled">&lsaquo;</span>
     {% endif %}
@@ -66,13 +66,13 @@
       {% if p == page %}
         <span class="active">{{ p }}</span>
       {% else %}
-        <a href="?page={{ p }}">{{ p }}</a>
+        <a href="?page={{ p }}{% if page_size is defined %}&page_size={{ page_size }}{% endif %}">{{ p }}</a>
       {% endif %}
     {% endfor %}
 
     {# Right Arrow #}
     {% if page < total_pages %}
-      <a href="?page={{ page+1 }}">&rsaquo;</a>
+      <a href="?page={{ page+1 }}{% if page_size is defined %}&page_size={{ page_size }}{% endif %}">&rsaquo;</a>
     {% else %}
       <span class="disabled">&rsaquo;</span>
     {% endif %}

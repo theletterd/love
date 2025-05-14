@@ -2,6 +2,7 @@
 import mock
 import pytest
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 import loveapp.logic
 from loveapp.config import CompanyValue
@@ -306,6 +307,86 @@ class TestMe(LoggedInUserBaseTest):
         assert 'Awesome work.' in response.data.decode()
 
         dude.key.delete()
+
+    @mock.patch('loveapp.logic.love.recent_sent_love')
+    @mock.patch('loveapp.logic.love.recent_received_love')
+    def test_me_pagination(self, mock_recent_received_love, mock_recent_sent_love, client):
+        # Create mock Future objects with our test data
+        mock_future_sent = mock.Mock()
+        mock_future_received = mock.Mock()
+        
+        # Create real loves for our test
+        dude = create_employee(username='dude')
+        
+        # Create multiple love objects for pagination testing
+        sent_loves = []
+        received_loves = []
+        
+        for i in range(5):
+            sent_loves.append(create_love(
+                sender_key=self.logged_in_employee.key,
+                recipient_key=dude.key,
+                message=f'Sent love {i}'
+            ))
+            
+            received_loves.append(create_love(
+                sender_key=dude.key,
+                recipient_key=self.logged_in_employee.key,
+                message=f'Received love {i}'
+            ))
+        
+        # Set up our mocks
+        mock_future_sent.get_result = mock.Mock(return_value=sent_loves)
+        mock_future_received.get_result = mock.Mock(return_value=received_loves)
+        
+        mock_recent_sent_love.return_value = mock_future_sent
+        mock_recent_received_love.return_value = mock_future_received
+        
+        # Test first page (default) with page_size=2
+        response = client.get('/me', query_string={'page_size': '2'})
+        html = response.data.decode()
+        assert 'class="active">1<' in html
+        assert 'Sent love 0' in html
+        assert 'Sent love 1' in html
+        # Check that page 3 items aren't on page 1
+        assert 'Sent love 4' not in html
+        
+        # Test explicit page 2
+        response = client.get('/me', query_string={'page': '2', 'page_size': '2'})
+        html = response.data.decode()
+        assert 'class="active">2<' in html
+        assert 'Sent love 2' in html
+        assert 'Sent love 3' in html
+        # Check that page 1 items aren't on page 2
+        assert 'Sent love 0' not in html
+        assert 'Sent love 1' not in html
+        
+        # Test last page
+        response = client.get('/me', query_string={'page': '3', 'page_size': '2'})
+        html = response.data.decode()
+        assert 'class="active">3<' in html
+        assert 'Sent love 4' in html
+        # Check that page 1 and 2 items aren't on page 3
+        assert 'Sent love 0' not in html
+        assert 'Sent love 2' not in html
+        
+        # Clean up
+        for love in sent_loves + received_loves:
+            love.key.delete()
+        dude.key.delete()
+
+    def test_me_pagination_bounds(self, client):
+        # Test page number below valid range
+        response = client.get('/me', query_string={'page': '0'})
+        assert response.status_code == 200
+        
+        # Test page number above valid range
+        response = client.get('/me', query_string={'page': '999'})
+        assert response.status_code == 200
+        
+        # Test invalid page parameter
+        response = client.get('/me', query_string={'page': 'invalid'})
+        assert response.status_code == 200
 
 
 class TestSubscriptions(LoggedInAdminBaseTest):
