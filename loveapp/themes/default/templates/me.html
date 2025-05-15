@@ -13,6 +13,7 @@
         {% for grouped_love in grouped_received_loves %}
         {{ grouped_love_message.love(
           "From",
+          current_user,
           grouped_love.senders,
           grouped_love.recipients,
           grouped_love.content,
@@ -37,6 +38,7 @@
         {% for grouped_love in grouped_sent_loves %}
           {{ grouped_love_message.love(
             "To",
+            current_user,
             grouped_love.recipients,
             grouped_love.recipients,
             grouped_love.content,

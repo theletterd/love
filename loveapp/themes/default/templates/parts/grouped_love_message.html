@@ -1,6 +1,6 @@
 {% import theme("parts/photobox.html") as photobox %}
 
-{% macro love(to_from_flag, senders, recipients, message, ts, secret, emote) %}
+{% macro love(to_from_flag, current_user, senders, recipients, message, ts, secret, emote) %}
     <div class="love-message-container" style="position: relative;">
         {% if to_from_flag == "To" %}
             {% set user_list = recipients %}
@@ -27,15 +27,17 @@
         </div>    
         <div class="love-message">
             {{ message|linkify_company_values }}
-            <div class="love-plus-one-container" style="display: inline;">
-                <a
-                    href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
-                    class="love-plus-one"
-                    title="Send this message"
-                >
-                    <span class="circle">+1</span>
-                </a>
-            </div>
+            {% if current_user.username not in senders | map(attribute='username') | list %}
+                <div class="love-plus-one-container" style="display: inline;">
+                    <a
+                        href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
+                        class="love-plus-one"
+                        title="Send this message"
+                    >
+                        <span class="circle">+1</span>
+                    </a>
+                </div>
+            {% endif %}
         {% if user_list|length > 1 %}
             <div class="user-list" tabindex="0">
                 {% for user in user_list %}

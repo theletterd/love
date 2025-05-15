@@ -229,13 +229,15 @@ def explore():
     grouped_sent_love = loveapp.logic.love.cluster_loves_by_time(sent_love)[:page_size]
     received_love = loveapp.logic.love.recent_received_love(user_key, limit=love_lookback_limit, include_secret=False).get_result()
     grouped_received_love = loveapp.logic.love.cluster_loves_by_time(received_love)[:page_size]
+    current_user = Employee.get_current_employee()
 
     return render_template(
         'explore.html',
         current_time=datetime.utcnow(),
         grouped_received_loves=grouped_received_love,
         grouped_sent_loves=grouped_sent_love,
-        user=user_key.get()
+        user=user_key.get(),
+        current_user=current_user,
     )
 
 
