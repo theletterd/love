@@ -206,10 +206,20 @@ function checkUserListCollapsible(userList) {
     }
 }
 
-function toggleUserList(button) {
-    const userList = button.closest('.user-list');
-    userList.classList.toggle('user-list-expanded');
-    button.setAttribute('aria-expanded', userList.classList.contains('user-list-expanded'));
+function toggleUserList(expanderBtn) {
+    const userList = expanderBtn.closest('.user-list');
+    const expanded = userList.classList.toggle('user-list-expanded');
+    if (expanded) {
+        expanderBtn.classList.add('chevron-rotated');
+        expanderBtn.setAttribute('aria-expanded', 'true');
+        userList.style.maxHeight = ''; // reset for measuring actual height
+        let fullHeight = userList.scrollHeight;
+        userList.style.maxHeight = fullHeight + "px"; // animate open!
+    } else {
+        expanderBtn.classList.remove('chevron-rotated');
+        expanderBtn.setAttribute('aria-expanded', 'false');
+        userList.style.maxHeight = ''; // REMOVE so it falls back to CSS (collapsed) height
+    }
 }
 
 window.addEventListener('DOMContentLoaded', function() {

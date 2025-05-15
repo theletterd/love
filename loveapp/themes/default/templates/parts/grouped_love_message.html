@@ -44,15 +44,13 @@
       <a href="/explore?user={{ user.username }}" class="badge">{{ user.full_name }}</a>
     {% endfor %}
     <button
-      class="user-list-expander"
-      type="button"
-      aria-expanded="false"
-      tabindex="0"
-      title="Show all users"
-      onclick="toggleUserList(this)"
-      style="display: none;">
-      <span class="chevron"></span>
-      <span class="sr-only">Show all recipients</span>
+    class="user-list-expander"
+    type="button"
+    aria-expanded="false"
+    onclick="toggleUserList(this)"
+  >
+    <span class="chevron"></span>
+    <span class="sr-only">Show all recipients</span>
     </button>
     <div class="user-list-gradient"></div>
 </div>
