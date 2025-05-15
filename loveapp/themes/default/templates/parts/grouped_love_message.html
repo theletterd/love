@@ -44,12 +44,13 @@
             {% set disable_plus_one = already_sent_this_love or already_received_this_love %}
             <div class="love-plus-one-container" style="display: inline;">
                 <a
-                    href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
                     class="love-plus-one{% if disable_plus_one %} disabled{% endif %}"
                     {% if disable_plus_one %}
                         tabindex="-1" 
                         aria-disabled="true"
                         onclick="return false;"
+                    {% else %}
+                        href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
                     {% endif %}
                 >
                     <span class="circle">+1</span>
