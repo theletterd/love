@@ -22,21 +22,13 @@
     <div class="love-message">
         {{ message|linkify_company_values }}
         <div class="love-plus-one-container" style="display: inline;">
-            <button type="button" class="btn btn-link love-plus-one" title="Send this message" onclick="togglePlusOneButton(this)">
+            <a
+                href="/?recipients={{ user_list | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
+                class="love-plus-one"
+                title="Send this message"
+            >
                 <span class="circle">+1</span>
-            </button>
-            <form action="/love" method="post" style="display: none;" class="love-plus-one-confirm">
-                <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                <input type="hidden" name="recipients" value="{{ user_list | map(attribute='username') | join(',') }}">
-                <input type="hidden" name="message" value="{{ message }}">
-                <button type="submit" class="btn btn-primary btn-xs" style="padding: 2px 7px; height: 23px;" title="Confirm +1">
-                    Send
-                </button>
-                <button type="button" class="btn btn-light btn-xs" style="padding: 2px 7px; height: 23px;" title="Cancel" onclick="togglePlusOneButton(this)">
-                    Cancel
-                </button>
-            </form>
-
+            </a>
         </div>
         {% if user_list|length > 1 %}
         <div class="user-list" tabindex="0">
@@ -57,6 +49,4 @@
         {% endif %}
     </div>
 </div>
-
-
 {% endmacro %}
