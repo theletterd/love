@@ -110,11 +110,67 @@ your favorite packet manager.
 
 ### Running the application locally
 
-* Check out the application code: <code>git clone git@github.com:Yelp/love.git</code>
-* Follow the [Prepare for deployment](#prepare-for-deployment) section
-* Run the app: <code>make run-dev</code> will start both [Yelp Love](http://localhost:8080) as well as the [Admin server](http://localhost:8000)
-* Follow the [CSV import](#csv) section to locally import user data
-* Make your changes
+Check out the application code and cd to the directory
+```
+$ git clone git@github.com:Yelp/love.git
+$ cd love
+```
+
+Create the virtual environment and activate it
+```
+$ python3 -m venv env
+$ source env/bin/activate
+```
+
+Install the requisite libraries
+```
+$ pip install -r requirements-dev.txt
+```
+
+Make a copy of loveapp/config.py
+```
+$ cp loveapp/config-example.py loveapp/config.py
+```
+
+Make a copy of employees.csv.example
+```
+cp import/employees.csv.example import/employees.csv
+```
+
+
+Edit employees.csv to add your own test data
+```
+username,first_name,last_name,department,office,photo_url
+michael,Michael,Scott,,,https://placehold.co/100x100
+jim,Jim,Halpert,,,https://placehold.co/100x100
+pam,Pamela,Beesly,,,https://placehold.co/100x100
+dwight,Dwight,Schrute,,,https://placehold.co/100x100
+angela,Angela,Martin,,,https://placehold.co/100x100
+ryan,Ryan,Howard,,,https://placehold.co/100x100
+stanley,Stanley,Hudson,,,https://placehold.co/100x100
+kelly,Kelly,Kapoor,,,https://placehold.co/100x100
+oscar,Oscar,Martinez,,,https://placehold.co/100x100
+creed,Creed,Bratton,,,https://placehold.co/100x100
+kevin,Kevin,Malone,,,https://placehold.co/100x100
+toby,Toby,Flenderson,,,https://placehold.co/100x100
+phyllis,Phyllis,Lapin,,,https://placehold.co/100x100
+meredith,Meredith,Palmer,,,https://placehold.co/100x100
+andy,Andy,Bernard,,,https://placehold.co/100x100
+bobvance,Vance,Refrigeration,,,https://placehold.co/100x100
+```
+
+Run the application
+```
+$ make run-dev
+```
+
+Go to http://localhost:8080/ and login as michael@example.com (or something matching a username in employees.csv), check the "Sign in as administrator" box. 
+You'll probably get an error, but that's ok.
+
+Go to http://localhost:8080/employees/import
+click "Import"
+
+You're done!
 
 ## Deployment
 
