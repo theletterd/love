@@ -41,6 +41,7 @@
         {% for grouped_love in grouped_sent_loves %}
         {{ grouped_love_message.love(
           "To",
+          grouped_love.senders,
           grouped_love.recipients,
           grouped_love.content,
           grouped_love.most_recent_love_timestamp,
@@ -63,6 +64,7 @@
           {{ grouped_love_message.love(
             "From",
             grouped_love.senders,
+            grouped_love.recipients,
             grouped_love.content,
             grouped_love.most_recent_love_timestamp,
             grouped_love.is_secret,
