@@ -36,31 +36,29 @@
                     Cancel
                 </button>
             </form>
-            <script>
-                function togglePlusOneButton(element) {
-                    const container = element.closest('.love-plus-one-container');
-                    const plusOneBtn = container.querySelector('.love-plus-one');
-                    const confirmForm = container.querySelector('.love-plus-one-confirm');
 
-                    if (confirmForm.style.display === 'none') {
-                        plusOneBtn.style.display = 'none';
-                        confirmForm.style.display = 'inline-block';
-                    } else {
-                        plusOneBtn.style.display = 'inline-block';
-                        confirmForm.style.display = 'none';
-                    }
-                }
-            </script>
         </div>
         {% if user_list|length > 1 %}
-        <div class="user-list">
-            {% for user in user_list %}
-            <a href="/explore?user={{ user.username }}" class="badge">{{ user.full_name }}</a>
-            {% endfor %}
-        </div>
+        <div class="user-list" tabindex="0">
+    {% for user in user_list %}
+      <a href="/explore?user={{ user.username }}" class="badge">{{ user.full_name }}</a>
+    {% endfor %}
+    <button
+      class="user-list-expander"
+      type="button"
+      aria-expanded="false"
+      tabindex="0"
+      title="Show all users"
+      onclick="toggleUserList(this)"
+      style="display: none;">
+      <span class="chevron"></span>
+      <span class="sr-only">Show all recipients</span>
+    </button>
+    <div class="user-list-gradient"></div>
+</div>
         {% endif %}
     </div>
-
-    
 </div>
+
+
 {% endmacro %}

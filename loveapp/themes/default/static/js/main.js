@@ -169,6 +169,57 @@ function setCopyToClipboardBtnAction() {
     });
 }
 
+function togglePlusOneButton(element) {
+    const container = element.closest('.love-plus-one-container');
+    const plusOneBtn = container.querySelector('.love-plus-one');
+    const confirmForm = container.querySelector('.love-plus-one-confirm');
+
+    if (confirmForm.style.display === 'none') {
+        plusOneBtn.style.display = 'none';
+        confirmForm.style.display = 'inline-block';
+    } else {
+        plusOneBtn.style.display = 'inline-block';
+        confirmForm.style.display = 'none';
+    }
+}
+function checkUserListCollapsible(userList) {
+    if (!userList) return;
+    const badges = Array.from(userList.querySelectorAll('.badge'));
+    const expander = userList.querySelector('.user-list-expander');
+    const gradient = userList.querySelector('.user-list-gradient');
+    if (badges.length < 2) {
+        userList.classList.remove('is-collapsible', 'user-list-expanded');
+        if (expander) expander.style.display = "none";
+        if (gradient) gradient.style.display = "none";
+        return;
+    }
+    const firstTop = badges[0].offsetTop;
+    const wraps = badges.some(badge => badge.offsetTop > firstTop);
+    if (wraps) {
+        userList.classList.add('is-collapsible');
+        if (expander) expander.style.display = "inline-block";
+        if (gradient) gradient.style.display = "block";
+    } else {
+        userList.classList.remove('is-collapsible', 'user-list-expanded');
+        if (expander) expander.style.display = "none";
+        if (gradient) gradient.style.display = "none";
+    }
+}
+
+function toggleUserList(button) {
+    const userList = button.closest('.user-list');
+    userList.classList.toggle('user-list-expanded');
+    button.setAttribute('aria-expanded', userList.classList.contains('user-list-expanded'));
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.user-list').forEach(checkUserListCollapsible);
+});
+window.addEventListener('resize', function() {
+    document.querySelectorAll('.user-list').forEach(checkUserListCollapsible);
+});
+
+
 $(document).ready(function () {
     setupDateFormatting();
     setupLinkify();
