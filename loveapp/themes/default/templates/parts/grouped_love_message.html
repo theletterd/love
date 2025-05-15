@@ -27,7 +27,7 @@
             </button>
             <form action="/love" method="post" style="display: none;" class="love-plus-one-confirm">
                 <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                <input type="hidden" name="recipients" value="{{ recipient_username }}">
+                <input type="hidden" name="recipients" value="{{ user_list | map(attribute='username') | join(',') }}">
                 <input type="hidden" name="message" value="{{ message }}">
                 <button type="submit" class="btn btn-primary btn-xs" style="padding: 2px 7px; height: 23px;" title="Confirm +1">
                     Send
