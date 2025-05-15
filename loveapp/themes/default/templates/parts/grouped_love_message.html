@@ -28,21 +28,21 @@
         <div class="love-message">
             {{ message|linkify_company_values }}
             {#
-                Checks if the current user's username is not present in the list of senders' usernames.
-                This is typically used to determine whether the current user has not sent a message in the grouped love message context.
+                Checks if the current user's username is not present in the list of senders' usernames and they are not the only recipient.
+                If this is the case, disable the plus one button.
             #}
-            {% set sender_usernames = senders | map(attribute='username') | list %}
-            {% if current_user.username not in sender_usernames and not (recipients|length == 1 and recipients[0].username == current_user.username) %}
-                <div class="love-plus-one-container" style="display: inline;">
-                    <a
-                        href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
-                        class="love-plus-one"
-                        title="Send this message"
-                    >
-                        <span class="circle">+1</span>
-                    </a>
-                </div>
-            {% endif %}
+            {% set disable_plus_one = current_user.username in senders | map(attribute='username') | list
+                or (recipients|length == 1 and recipients[0].username == current_user.username) %}
+            <div class="love-plus-one-container" style="display: inline;">
+                <a
+                    href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
+                    class="love-plus-one{% if disable_plus_one %} disabled{% endif %}"
+                    title="Send this message"
+                    {% if disable_plus_one %}tabindex="-1" aria-disabled="true" onclick="return false;"{% endif %}
+                >
+                    <span class="circle">+1</span>
+                </a>
+            </div>
         {% if user_list|length > 1 %}
             <div class="user-list" tabindex="0">
                 {% for user in user_list %}

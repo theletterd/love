@@ -381,13 +381,19 @@ h4 {
     margin: -15px -25px 0 0;
 }
 
-.love-plus-one {
+a.love-plus-one,
+a.love-plus-one:active {
+    outline: none;
     background: none;
     border: none;
     padding: 0;
     margin-left: 8px;
     cursor: pointer;
     font-weight: bold;
+}
+
+.love-plus-one.disabled {
+    cursor: not-allowed;
 }
 
 .love-plus-one .circle {
@@ -397,27 +403,6 @@ h4 {
     position: relative;
     transform: rotate(-45deg);
     margin: 2px 4px;
-    
-    &:before,
-    &:after {
-        content: '';
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: inherit;
-        position: absolute;
-        z-index: -1;
-    }
-    
-    &:before {
-        top: -10px;
-        left: 0;
-    }
-    
-    &:after {
-        top: 0;
-        right: -10px;
-    }
     background: #ea050b;
     color: white;
     text-align: center;
@@ -425,8 +410,33 @@ h4 {
     transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
     transform: scale(1);
 }
+.love-plus-one .circle:before,
+.love-plus-one .circle:after {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: inherit;
+    position: absolute;
+    z-index: -1;
+}
+.love-plus-one .circle:before {
+    top: -10px;
+    left: 0;
+}
+.love-plus-one .circle:after {
+    top: 0;
+    right: -10px;
+}
 
-.love-plus-one:hover .circle {
+/* Disabled state */
+.love-plus-one.disabled .circle {
+    background: #aaa;
+    cursor: default;
+    pointer-events: none;
+}
+
+.love-plus-one:not(.disabled):hover .circle {
     background: #c41200;
     transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
     transform: scale(1.1);
