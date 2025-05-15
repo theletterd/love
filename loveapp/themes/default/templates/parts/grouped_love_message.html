@@ -31,8 +31,8 @@
                 Checks if the current user's username is not present in the list of senders' usernames.
                 This is typically used to determine whether the current user has not sent a message in the grouped love message context.
             #}
-            {% if current_user.username not in senders | map(attribute='username') | list
-                and not (recipients|length == 1 and recipients[0].username == current_user.username) %}
+            {% set sender_usernames = senders | map(attribute='username') | list %}
+            {% if current_user.username not in sender_usernames and not (recipients|length == 1 and recipients[0].username == current_user.username) %}
                 <div class="love-plus-one-container" style="display: inline;">
                     <a
                         href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
