@@ -27,6 +27,7 @@
       {% for grouped_love in grouped_loves %}
       {{ grouped_love_message.love(
         "To",
+        current_user,
         grouped_love.senders,
         grouped_love.recipients,
         grouped_love.content,
