@@ -47,6 +47,7 @@ h2 {
 .love-message-container {
     margin-bottom: 20px;
     clear: left;
+    position: relative;
 }
 
 .love-message {
@@ -376,10 +377,15 @@ h4 {
     display: block;
 }
 
-.love-plus-one-container {
-    float: right;
-    margin: -15px -25px 0 0;
+.loves-columns .love-message-container {
+    width: 100%;
+    box-sizing: border-box;
 }
+
+.love-message-container .emote {
+    position: absolute;
+    top: -10px; left: 25px;
+  }
 
 a.love-plus-one,
 a.love-plus-one:active {
@@ -548,9 +554,11 @@ a.love-plus-one:active {
 
   .love-plus-one-container {
     position: relative;
-    display: inline-block;
+    float: right;
+    margin: -15px -15px 0 0;
   }
-  
+
+
   .love-plus-one .custom-tooltip {
     visibility: hidden;
     width: 140px;
@@ -561,10 +569,11 @@ a.love-plus-one:active {
     padding: 0.5em;
     position: absolute;
     z-index: 1000;
-    /* Position from top right */
-    bottom: 100%;               /* above the element */
-    right: 0;                   /* align to the element's right edge */
-    margin-bottom: 0.5em;       /* space between tooltip and element */
+    /* Position from the right side */
+    top: 50%;                   /* vertically center */
+    left: 100%;                 /* to the right of the element */
+    transform: translateY(-50%); /* perfect vertical centering */
+    margin-left: 2em;         /* increased spacing to move tooltip further right */
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.15s;
@@ -575,11 +584,12 @@ a.love-plus-one:active {
   .love-plus-one .custom-tooltip::after {
     content: '';
     position: absolute;
-    top: 100%;
-    right: 0.75em;
+    top: 50%;
+    right: 100%;                /* at the left edge of tooltip */
+    transform: translateY(-50%);
     border-width: 6px;
     border-style: solid;
-    border-color: #222 transparent transparent transparent;
+    border-color: transparent #222 transparent transparent; /* arrow pointing left */
   }
   
   .love-plus-one:hover .custom-tooltip,
@@ -594,3 +604,4 @@ a.love-plus-one:active {
     cursor: not-allowed;
     pointer-events: auto;
   }
+

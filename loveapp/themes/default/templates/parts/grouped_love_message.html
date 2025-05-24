@@ -1,7 +1,7 @@
 {% import theme("parts/photobox.html") as photobox %}
 
 {% macro love(to_from_flag, current_user, senders, recipients, message, ts, secret, emote) %}
-    <div class="love-message-container" style="position: relative;">
+    <div class="love-message-container">
         {% if to_from_flag == "To" %}
             {% set user_list = recipients %}
         {% else %}
@@ -24,9 +24,10 @@
             {% if secret %}
             <span class="badge">SECRET</span>
             {% endif %} 
-        </div>    
-        <div class="love-message">
-            {{ message|linkify_company_values }}
+        </div>
+
+
+        <div class="love-plus-one-container" style="display: inline;">
             {#
                 Checks if the current user's username is not present in the list of senders' usernames and they are not the only recipient.
                 If this is the case, disable the plus one button.
@@ -41,22 +42,25 @@
             {% else %}
                 {% set tooltip_text = "Add your love!" %}
             {% endif %}
-            {% set disable_plus_one = already_sent_this_love or already_received_this_love %}
-            <div class="love-plus-one-container" style="display: inline;">
-                <a
-                    class="love-plus-one{% if disable_plus_one %} disabled{% endif %}"
-                    {% if disable_plus_one %}
-                        tabindex="-1" 
-                        aria-disabled="true"
-                        onclick="return false;"
-                    {% else %}
-                        href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
-                    {% endif %}
-                >
-                    <span class="circle">+1</span>
-                    <span class="custom-tooltip">{{ tooltip_text }}</span>
-                </a>
-            </div>
+            {% set disable_plus_one = already_sent_this_love or already_received_this_love %}        
+            <a
+                class="love-plus-one{% if disable_plus_one %} disabled{% endif %}"
+                {% if disable_plus_one %}
+                    tabindex="-1" 
+                    aria-disabled="true"
+                    onclick="return false;"
+                {% else %}
+                    href="/?recipients={{ recipients | map(attribute='username') | join(',') }}&message={{ message | urlencode }}"
+                {% endif %}
+            >
+                <span class="circle">+1</span>
+                <span class="custom-tooltip">{{ tooltip_text }}</span>
+            </a>
+        </div>    
+
+        <div class="love-message">
+            {{ message|linkify_company_values }}
+            
         {% if user_list|length > 1 %}
             <div class="user-list" tabindex="0">
                 {% for user in user_list %}
@@ -76,10 +80,5 @@
          {% endif %}
         </div>
     </div>
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-          new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-      </script>
+
 {% endmacro %}
